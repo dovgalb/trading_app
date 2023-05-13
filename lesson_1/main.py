@@ -1,3 +1,5 @@
+#  Эндпоинты, Параметры URL и Запроса
+
 from fastapi import FastAPI
 
 app = FastAPI()
