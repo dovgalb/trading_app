@@ -1,12 +1,26 @@
-from typing import List
+from datetime import datetime
+from enum import Enum
+from typing import List, Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
 from pydantic.fields import Field
 from pydantic.main import BaseModel
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import ValidationError
+from fastapi.responses import JSONResponse
 
 app = FastAPI(
     title="Trading App"
 )
+
+
+@app.exception_handler(ValidationError)
+async def validation_exception_handler(request: Request, exc: ValidationError):
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content=jsonable_encoder({"detail": exc.errors()})
+    )
+
 
 fake_users = [
     {"id": 1, "role": "admin", "name": "Bob"},
@@ -33,10 +47,22 @@ class Trade(BaseModel):
     amount: float
 
 
+class DegreeType(Enum):
+    newbie = "newbie"
+    expert = "expert"
+
+
+class Degree(BaseModel):
+    id: int
+    created_at: datetime
+    type_degree: DegreeType
+
+
 class User(BaseModel):
     id: int
     role: str
     name: str
+    degree: Optional[List[Degree]] = []
 
 
 @app.post("/trades")
@@ -48,7 +74,6 @@ def add_trades(trades: List[Trade]):
 @app.post('/add_user')
 def add_user():
     pass
-
 
 
 @app.get('/users/{user_id}', response_model=List[User])
