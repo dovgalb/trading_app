@@ -8,7 +8,7 @@ from sqlalchemy import String, Column, Integer, TIMESTAMP, ForeignKey, Boolean
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, declarative_base, Mapped, mapped_column
 
-from config import DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
+from src.auth.config import DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
 from models.models import role
 
 DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
